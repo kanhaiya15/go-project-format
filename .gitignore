@@ -1,0 +1,24 @@
+.idea/*
+.DS_Store
+**/**/*.log
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+gopf
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+build/
+vendor
+conf/environments/development/environment.development.env
+conf/environments/production/environment.production.env
+conf/environments/staging/environment.staging.env
+# env file
+.env
+# ignore tmp
+tmp/

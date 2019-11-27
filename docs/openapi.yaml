@@ -1,0 +1,1316 @@
+openapi: 3.0.0
+info:
+  title: GoPF API Documentation
+  version: 1.0.0
+servers:
+  - url: '{protocol}://api.lambdatest.com/gopf/api/v1'
+    variables:
+      protocol:
+        default: https
+        enum:
+          - https
+paths:
+  /builds:
+    get:
+      tags:
+        - Build
+      summary: Fetch all builds of an account.
+      description: Fetch all builds of an account. You can limit the number of records and apply filter on status,build date range and sort by users,start date and end date in asc and desc order. You can apply sort on multiple columns.
+      operationId: builds
+      parameters:
+        - name: offset
+          in: query
+          description: It defines the number of lists on the basis of limit parameter. e.g offset=10
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: To fetch specified number of records. e.g. limit=10
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: status
+          in: query
+          description: To fetch the list of builds with specific statuses. You can pass multiple comma seperated statuses e.g. running,queued,completed,timeout and error.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: fromdate
+          in: query
+          description: To fetch the list of builds that executed from the specified Start Date. The Date format must be YYYY-MM-DD. e.g. "2018-03-15".
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: todate
+          in: query
+          description: To fetch the list of builds that executed till the specified End Date. If both fromdate and todate value provided then it works as range filter. The Date format must be YYYY-MM-DD. e.g. "2018-03-15".
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: To sort the list in ascending or descending order using multiple keys. e.g. "asc.user_id,desc.org_id"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBuildResponse'
+        400:
+          description: Invalid session id value
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /builds/{build_id}:
+    get:
+      tags:
+        - Build
+      summary: Fetch specified build details
+      description: To fetch specified build details such as build status, number of tests and started by user.
+      operationId: singlebuild
+      parameters:
+        - name: build_id
+          in: path
+          description: Build ID that details you want to fetch
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleBuildResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: Resource not found
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+        - Build
+      summary: Delete Build
+      description: To delete specified Build from dashboard.
+      operationId: status_ind
+      parameters:
+        - name: build_id
+          in: path
+          description: Build ID that need to be deleted
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteBuildResponse'
+        400:
+          description: Invalid build id value
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+    patch:
+      tags:
+        - Build
+      summary: Update Build Name
+      description: To change build name.
+      operationId: build_id
+      parameters:
+        - name: build_id
+          in: path
+          description: build id that name need to be changed.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        description: Updated Build Name
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditBuild'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EditBuildResponse'
+        400:
+          description: Bad Request
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /sessions:
+    get:
+      tags:
+        - Session
+      summary: Fetch list of all sessions
+      description: To fetch list of sessions. You can also limit the number of records, and paginate through your data using Parameters.
+      operationId: sessions
+      parameters:
+        - name: build_id
+          in: query
+          description: To filter sessions of specific build.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: username
+          in: query
+          description: To filter sessions of specific user.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: It defines the number of lists on the basis of limit parameter. e.g offset=10
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: To fetch specified number of records. e.g. limit=10
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+        - name: status
+          in: query
+          description: To fetch the list of sessions with specific statuses. You can pass multiple comma seperated statuses e.g. running,queued,completed,passed,failed,timeout,error and lambda-error.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: fromdate
+          in: query
+          description: To fetch the list of sessions that executed from the specified Start Date. The Date format must be YYYY-MM-DD. e.g. "2018-03-15".
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: todate
+          in: query
+          description: To fetch the list of sessions that executed till the specified End Date. If both fromdate and todate value provided then it works as range filter. The Date format must be YYYY-MM-DD. e.g. "2018-03-15".
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: To sort the list in ascending or descending order using multiple keys. e.g. "asc.user_id,desc.duration"
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListsTestsResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}:
+    get:
+      tags:
+        - Session
+      summary: session specific information
+      description: To fetch specified session details such as name, status,os,browser,version and all generated logs endpoint.
+      parameters:
+        - name: session_id
+          in: path
+          description: SESSION ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: Resource associated to session_id is not available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+        - Session
+      summary: Delete test session
+      description: Delete a session.
+      parameters:
+        - name: session_id
+          in: path
+          description: SESSION ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionDeleteSuccess'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        403:
+          description: Forbidden! Operation not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionForbidden'
+        404:
+          description: Resource associated to session_id is not available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+    patch:
+      tags:
+        - Session
+      summary: Update session name and status.
+      description: To update the test session name and status {"passed","failed"}.
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        description: You can update both name and status of a session in single request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionPayload'
+        required: true
+      responses:
+        200:
+          description: successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionUpdateSuccess'
+        400:
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionBadResquest'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        403:
+          description: Forbidden! Operation not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionForbidden'
+        404:
+          description: Resource associated to session_id is not available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/stop:
+    put:
+      tags:
+        - Session
+      summary: Stop session by sessionID
+      description: To stop session by sessionID.
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopSessionResponse'
+        400:
+          description: Bad operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlreadyStoppedSessionResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/screenshots:
+    get:
+      tags:
+        - Session
+      summary: To fetch all step by step screenshots
+      description: To fetch all the step by step screenshots in zip format.
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenshotResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/video:
+    get:
+      tags:
+        - Session
+      summary: Fetch recorded video of a test session id.
+      description: To fetch video of a recorded test session.
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/log/command:
+    get:
+      tags:
+        - Session
+      summary: command logs of a test session
+      description: To fetch the all executed commands of a test session in plain json text.
+      operationId: session
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        400:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/log/selenium:
+    get:
+      tags:
+        - Session
+      summary: selenium log of a test session
+      description: To fetch selenum log that contains grid requests and reponses of a test session in plain json text.
+      operationId: session1
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeleniumLogResponse'
+        400:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/log/network:
+    get:
+      tags:
+        - Session
+      summary: Network log of a test session
+      description: To fetch Network log that contains all the requested urls of a test session in plain json text.
+      operationId: session2
+      parameters:
+        - name: session_id
+          in: path
+          description: get logs based on session id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeleniumLogResponse'
+        400:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /sessions/{session_id}/log/console:
+    get:
+      tags:
+        - Session
+      summary: console log of a test session
+      description: To fetch console log that contains console errors thrown by application during a test session in plain json text.
+      operationId: session3
+      parameters:
+        - name: session_id
+          in: path
+          description: Session ID
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeleniumLogResponse'
+        400:
+          description: session id not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      security:
+        - basicAuth: []
+  /tunnels:
+    get:
+      tags:
+        - tunnel
+      summary: Fetch running tunnels of your account.
+      description: To fetch lists of all tunnels runing in an account.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTunnelsResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionNotFound'
+      security:
+        - basicAuth: []
+  /tunnels/{tunnel_id}:
+    delete:
+      tags:
+        - tunnel
+      summary: Stop a running tunnel
+      description: To stop a running tunnel in your account. e.g 2345
+      parameters:
+        - name: tunnel_id
+          in: path
+          description: Your tunnel id.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TunnelsDeleteResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+        403:
+          description: Forbidden! Operation not allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TunnelStopForbidden'
+        404:
+          description: Tunnel with specified id does not exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TunnelStopBadRequest'
+      security:
+        - basicAuth: []
+  /platforms:
+    get:
+      tags:
+        - platforms
+      summary: Fetch platforms
+      description: Fetch platforms along with browsers and versions supported.
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPlatformResponse'
+        401:
+          description: Access denied. Auth error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessDenied'
+      #        404:
+      #          description: Not found
+      #          content:
+      #            application/json:
+      #              schema:
+      #                $ref: '#/components/schemas/PageNotFound'
+      security:
+        - basicAuth: []
+components:
+  schemas:
+    EditBuild:
+      type: object
+      properties:
+        name:
+          type: string
+          format: string
+    EditBuildResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Build updated successfully
+        status:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/EditBuildResponse_data'
+    DeleteBuildResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Build deleted successfully
+        status:
+          type: string
+          example: success
+        data:
+          $ref: '#/components/schemas/EditBuildResponse_data'
+    PageNotFound:
+      type: string
+      example: '404 page not found'
+    GetPlatformResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Retrieve platforms was successful.
+        status:
+          type: string
+          example: success
+        platforms:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformResponse_data'
+    PlatformResponse_data:
+      type: object
+      properties:
+        platform:
+          type: string
+        browsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrowserResponse_data'
+    BrowserResponse_data:
+      type: object
+      properties:
+        browser_name:
+          type: string
+        version:
+          type: string
+    TunnelsDeleteResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Delete tunnel was successful.
+        status:
+          type: string
+          example: success
+    TunnelStopBadRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Tunnel with specified id not found.
+        status:
+          type: string
+          example: fail
+    TunnelStopForbidden:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Forbidden! Opertaion not allowed.
+        status:
+          type: string
+          example: fail
+    AccessDenied:
+      type: string
+      example: 'HTTP Basic: Access denied.'
+    ScreenshotResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Retrieve screenshot url was successful
+        status:
+          type: string
+          example: success
+        url:
+          type: string
+    VideoResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Retrieve video url was successful
+        status:
+          type: string
+          example: success
+        url:
+          type: string
+    SessionBadResquest:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Please provide a valid payload
+        status:
+          type: string
+          example: fail
+    ListsTestsResponse:
+      required:
+        - Meta
+        - data
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ListsTestsResponse_Meta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListsTestsResponse_data'
+    LogResponse:
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogResponse_data'
+    ListBuildResponse:
+      required:
+        - Meta
+        - data
+      properties:
+        Meta:
+          $ref: '#/components/schemas/ListsTestsResponse_Meta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListBuildResponse_data'
+    SessionData:
+      type: object
+      properties:
+        name:
+          type: string
+          example: mytest
+        duration:
+          type: integer
+          format: int
+        platform:
+          type: string
+          example: win10
+        browser:
+          type: string
+          example: chrome
+        browser_version:
+          type: string
+          example: '71.0'
+        device:
+          type: string
+        status_ind:
+          type: string
+        hash_id:
+          type: string
+          example: bc02fd99593f14e37850745d66197f89
+        build_name:
+          type: string
+          example: my-build
+        console_logs_url:
+          type: string
+          example: https://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/console
+        network_logs_url:
+          type: string
+          example: https://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/network
+        command_logs_url:
+          type: string
+          example: http://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/command
+        selenium_logs_url:
+          type: string
+          example: http://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/selenium
+        screenshot_url:
+          type: string
+          example: https://s3.amazonaws.com/ml-screenshots/00HIR-IQNLL-SDVHV-KDTBM/video/index.m3u8
+        video_url:
+          type: string
+          example: https://d15x9hjibri3lt.cloudfront.net/00HIR-IQNLL-SDVHV-KDTBM/screenshots.zip
+    StopSessionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Session stopped successfully.
+        status:
+          type: string
+          example: success
+        url:
+          type: string
+    AlreadyStoppedSessionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Oops! Looks like session is already stopped
+        status:
+          type: string
+          example: fail
+        url:
+          type: string
+    TunnelNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          example: No Active tunnel found
+        status:
+          type: string
+          example: success
+    GetTunnelsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Retrieve tunnel was successful
+        status:
+          type: string
+          example: success
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TunnelData'
+    TunnelData:
+      type: object
+      properties:
+        dns:
+          type: string
+        email:
+          type: string
+        folder_path:
+          type: string
+        local_domains:
+          type: string
+        org_id:
+          type: integer
+        start_timestamp:
+          type: string
+        status_ind:
+          type: string
+        tunnel_id:
+          type: integer
+        tunnel_name:
+          type: string
+        user_id:
+          type: integer
+    SessionNotFound:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Either resource not found or already deleted
+        status:
+          type: string
+          example: fail
+    SessionForbidden:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Forbidden! Operation not allowed.
+        status:
+          type: string
+          example: fail
+    Session:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/SessionData'
+        message:
+          type: string
+          example: Retrieve session was successful
+        status:
+          type: string
+          description: pet status in the store
+          enum:
+            - success
+            - failed
+    SessionUpdateSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Session updated successfully
+        status:
+          type: string
+          example: success
+    SessionDeleteSuccess:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Session deleted successfully
+        status:
+          type: string
+          example: success
+    UpdateSessionPayload:
+      type: object
+      properties:
+        name:
+          type: string
+          example: mytest
+        status_ind:
+          type: string
+          example: completed
+    EditBuildResponse_data:
+      type: object
+      properties:
+        result:
+          type: string
+          example: '1'
+    ListsTestsResponse_Meta_attributes:
+      type: object
+      properties:
+        org_id:
+          type: number
+    ListsTestsResponse_Meta_result_set:
+      type: object
+      properties:
+        count:
+          type: number
+        limit:
+          type: number
+        offset:
+          type: number
+        total:
+          type: number
+    ListsTestsResponse_Meta:
+      type: object
+      properties:
+        attributes:
+          $ref: '#/components/schemas/ListsTestsResponse_Meta_attributes'
+        result_set:
+          $ref: '#/components/schemas/ListsTestsResponse_Meta_result_set'
+    ListsTestsResponse_data:
+      type: object
+      properties:
+        build_name:
+          type: string
+          example: MACOS 10.12-CHROME-2018-12-23
+        status_ind:
+          type: string
+          example: passed
+        browser:
+          type: string
+          example: chrome
+        platform:
+          type: string
+          example: sierra
+        version:
+          type: string
+          example: '39.0'
+        name:
+          type: string
+          example: macos 10.12-chrome-39.0
+        session_id:
+          type: string
+          example: e7f2d78de1a8822c98e91e49428d0569
+        device:
+          type: string
+        duration:
+          type: string
+          example: '8'
+        selenium_logs:
+          type: string
+          example: https://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/selenium
+        console_logs:
+          type: string
+          example: https://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/console
+        network_logs:
+          type: string
+          example: https://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/network
+        command_logs:
+          type: string
+          example: http://api.lambdatest.com/automation/api/v1/sessions/bc02fd99593f14e37850745d66197f89/log/command
+    LogResponse_Value:
+      type: object
+      properties:
+        requestId:
+          type: string
+          example: 82e3b7cd-3b04-4bc8-9d2b-567aff450fe4
+        RequestStartTime:
+          type: number
+          example: 1551356385
+        requestMethod:
+          type: string
+          example: POST
+        requestPath:
+          type: string
+          example: /wd/hub/session/2F42BCCC-BF43-426A-A72F-F58F58167496/element/node-DF5D363E-84A2-4CA4-9AC4-0F398C606082/click
+        duration:
+          type: number
+          example: 8
+        requestBody:
+          type: string
+          example: '{"sessionId": "2F42BCCC-BF43-426A-A72F-F58F58167496", "id": "node-DF5D363E-84A2-4CA4-9AC4-0F398C606082"}'
+        responseBody:
+          type: string
+          example: '{"status":0,"sessionId":"2F42BCCC-BF43-426A-A72F-F58F58167496","value":{}}'
+        responseStatus:
+          type: string
+          example: 200 OK
+        screenshotId:
+          type: string
+    LogResponse_data:
+      type: object
+      properties:
+        logType:
+          type: string
+          example: requestLog
+        testID:
+          type: string
+          example: 5HLCQ-HPCWH-UOE2O-2CUFA
+        status:
+          type: number
+          example: 0
+        timestamp:
+          type: number
+          example: 1551356385
+        Value:
+          $ref: '#/components/schemas/LogResponse_Value'
+    SingleBuildResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/SingleBuildResponse_data'
+        message:
+          type: string
+          example: Retrieve build list was successful
+        status:
+          type: string
+          example: success
+    ListBuildResponse_data:
+      type: object
+      properties:
+        build_id:
+          type: number
+          example: 1782
+        name:
+          type: string
+          example: shivam-video-test
+        user_id:
+          type: number
+          example: 1212
+        username:
+          type: string
+          example: shivam
+        status_ind:
+          type: string
+          example: completed
+        create_timestamp:
+          type: string
+          example: 2019-02-05T08:24:36.000Z
+        end_timestamp:
+          type: string
+          example: 2019-02-05T08:27:22.000Z
+    SessionUpdateSuccess_data:
+      type: object
+      properties:
+        result:
+          type: integer
+          format: int
+          example: 1
+    SeleniumLogResponse:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeleniumLogResponse_data'
+    SingleBuildResponse_data:
+      type: object
+      properties:
+        build_id:
+          type: number
+          example: 1
+        name:
+          type: string
+          example: asdaskjaaa
+        user_id:
+          type: number
+          example: 1212
+        username:
+          type: string
+          example: john smith
+        status_ind:
+          type: string
+          example: completed
+        create_timestamp:
+          type: string
+          example: 2018-12-23T14:30:14.000Z
+        end_timestamp:
+          type: string
+          example: 2018-12-25T12:46:38.000Z
+    SeleniumLogResponse_Value:
+      type: object
+      properties:
+        level:
+          type: string
+          example: INFO
+        message:
+          type: string
+          example: Started new session 2F42BCCC-BF43-426A-A72F-F58F58167496 (org.openqa.selenium.safari.SafariDriverService)
+        timestamp:
+          type: number
+          example: 1551356378609
+    SeleniumLogResponse_data:
+      type: object
+      properties:
+        logType:
+          type: string
+          example: server
+        testID:
+          type: string
+          example: 5HLCQ-HPCWH-UOE2O-2CUFA
+        status:
+          type: number
+          example: 0
+        timestamp:
+          type: number
+          example: 1551356378609
+        Value:
+          $ref: '#/components/schemas/SeleniumLogResponse_Value'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

@@ -14,7 +14,7 @@ https://github.com/gin-gonic/gin
 ## To run
 ```bash
     For Develpoment
-    export APP_ENV=develpoment && go run main.go 
+    export APP_ENV=development && go run main.go 
     For Staging
     export APP_ENV=staging && go run main.go    
     For Production

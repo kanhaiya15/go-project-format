@@ -14,7 +14,7 @@ func NewRouter() *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	route := router.Group("/gofp/api/v1")
+	route := router.Group("/gopf/api/v1")
 
 	route.GET("/", controllers.Home)
 	route.GET("/ping", controllers.Ping)

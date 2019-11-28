@@ -13,10 +13,13 @@ https://github.com/gin-gonic/gin
 
 ## To run
 ```bash
-    For Develpoment
-    export APP_ENV=development && go run main.go 
-    For Staging
-    export APP_ENV=staging && go run main.go    
-    For Production
-    export APP_ENV=production && go run main.go      
+    Rename example.env to .env
+
+    go run main.go
+```
+## Docker
+```bash
+    docker image build -t gopf:1.0 .
+    docker container run --publish 9000:9000 --detach --name gopf gopf:1.0
+    docker container rm --force gopf
 ```

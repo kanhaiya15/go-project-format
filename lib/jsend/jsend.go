@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/kanhaiya15/gopf/logging/gopflogrus"
+	"github.com/kanhaiya15/gopf/lib/logging/gopflogrus"
 )
 
 var logger = gopflogrus.NewLogger()

@@ -20,6 +20,6 @@ https://github.com/gin-gonic/gin
 ## Docker
 ```bash
     docker image build -t gopf:1.0 .
-    docker container run --publish 9000:9000 --detach --name gopf gopf:1.0
+    docker container run --publish 9000:9000 --name gopf gopf:1.0
     docker container rm --force gopf
 ```

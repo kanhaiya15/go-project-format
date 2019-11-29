@@ -9,7 +9,9 @@ import (
 // NewRouter API Route
 func NewRouter() *gin.Engine {
 	router := gin.New()
-
+	router.NoRoute(func(c *gin.Context) {
+		controllers.NotFound(c)
+	})
 	router.Use(CORSMiddleware())
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
@@ -20,6 +22,12 @@ func NewRouter() *gin.Engine {
 	route.GET("/ping", controllers.Ping)
 	route.GET("/health", controllers.Health)
 	route.GET("/stats", controllers.DBStats)
+
+	// jsonplaceholder
+	route.GET("/posts", controllers.GetPosts)
+	route.POST("/post", controllers.AddPost)
+	route.PUT("/post/:postID", controllers.UpdatePost)
+	route.DELETE("/post/:postID", controllers.DeletePost)
 
 	route.Use(middlewares.Authenticate())
 	return router

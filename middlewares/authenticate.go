@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kanhaiya15/gopf/constants"
-	"github.com/kanhaiya15/gopf/logging/gopflogrus"
+	"github.com/kanhaiya15/gopf/lib/logging/gopflogrus"
 )
 
 var logger = gopflogrus.NewLogger()

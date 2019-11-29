@@ -10,7 +10,9 @@ import (
 )
 
 // Pool sqlx.DB
-var Pool *sqlx.DB
+var (
+	Pool *sqlx.DB
+)
 
 // DBConfig Db Config struct
 type DBConfig struct {
@@ -59,23 +61,23 @@ func DBstatus() error {
 	return Pool.Ping()
 }
 
-func getConnection() (dbConn DBConfig, err error) {
-	dbHost, err := utils.GetConfValue("DB_HOST")
+func getConnection() (conn DBConfig, err error) {
+	host, err := utils.GetConfValue("DB_HOST")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	dbPort, err := utils.GetConfValue("DB_PORT")
+	port, err := utils.GetConfValue("DB_PORT")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	dbUsername, err := utils.GetConfValue("DB_USERNAME")
+	username, err := utils.GetConfValue("DB_USERNAME")
 	if err != nil {
 		panic(err.Error())
 	}
 
-	dbPassword, err := utils.GetConfValue("DB_PASSWORD")
+	password, err := utils.GetConfValue("DB_PASSWORD")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -84,12 +86,12 @@ func getConnection() (dbConn DBConfig, err error) {
 	if err != nil {
 		panic(err.Error())
 	}
-	dbConn = DBConfig{
-		Host:         dbHost,
-		Port:         dbPort,
-		Username:     dbUsername,
-		Password:     dbPassword,
+	conn = DBConfig{
+		Host:         host,
+		Port:         port,
+		Username:     username,
+		Password:     password,
 		DatabaseName: dbName,
 	}
-	return dbConn, nil
+	return conn, nil
 }

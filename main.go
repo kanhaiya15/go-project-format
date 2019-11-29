@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	mysqlChan := make(chan bool)
-	redisChan := make(chan bool)
+	mysqlChan := make(chan struct{})
+	redisChan := make(chan struct{})
 	go gopfmysql.Init(mysqlChan)
 	go gopfredis.Init(redisChan)
 	<-mysqlChan

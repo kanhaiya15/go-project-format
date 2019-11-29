@@ -17,13 +17,14 @@ var (
 )
 
 // Init initialize
-func Init() {
+func Init(ch chan bool) {
 	Pool = newPool()
 	err := Pool.TestOnBorrow(Pool.Get(), time.Time{})
 	if err != nil {
 		panic(err.Error())
 	}
 	cleanupHook()
+	ch <- true
 }
 
 func newPool() *redis.Pool {

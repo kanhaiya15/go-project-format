@@ -26,7 +26,7 @@ type DBConfig struct {
 }
 
 // Init initialize
-func Init() {
+func Init(ch chan bool) {
 	conn, err := getConnection()
 	if err != nil {
 		panic(err.Error())
@@ -44,6 +44,7 @@ func Init() {
 	if err != nil {
 		panic(err.Error())
 	}
+	ch <- true
 }
 
 //GetConn Get Pool

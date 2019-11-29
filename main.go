@@ -9,7 +9,11 @@ import (
 )
 
 func main() {
-	gopfmysql.Init()
-	gopfredis.Init()
+	mysqlChan := make(chan bool)
+	redisChan := make(chan bool)
+	go gopfmysql.Init(mysqlChan)
+	go gopfredis.Init(redisChan)
+	<-mysqlChan
+	<-redisChan
 	gopfserver.Init()
 }

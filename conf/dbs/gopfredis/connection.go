@@ -84,3 +84,8 @@ func cleanupHook() {
 		os.Exit(0)
 	}()
 }
+
+// GetConn GetConn
+func GetConn() (redis.Conn, error) {
+	return newPool().Dial()
+}

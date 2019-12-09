@@ -24,3 +24,8 @@ const (
 	RedisConnectionPool        = 40
 	CacheAuthTTL               = 60 * 60 * 4
 )
+
+//
+var (
+	KafkaBroker = []string{"mag-kafka.lambdatest.com:9092", "mag-kafka1.lambdatest.com:9092", "mag-kafka2.lambdatest.com:9092"}
+)
